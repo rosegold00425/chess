@@ -1,0 +1,359 @@
+/* 기본 세팅 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+/* 전체 앱 래퍼 */
+.app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 공통: 화면 한 장 */
+.screen {
+  width: 100%;
+  height: 100%;
+  display: none;            /* 기본은 숨김, JS에서 .screen--active 붙여서 켬 */
+  padding: 16px;
+}
+
+.screen--active {
+  display: flex;
+}
+
+/* =========================================================
+   1. 게임 UI - 보드만 크게 있는 화면
+   ========================================================= */
+#game-screen {
+  justify-content: center;
+  align-items: center;
+}
+
+.game-board-wrapper {
+  width: 90%;
+  height: 90%;
+  border-radius: 24px;
+  border: 3px solid #e5e7eb;
+  background: #020617;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-board {
+  width: 60%;
+  height: 60%;
+  border-radius: 16px;
+  border: 2px dashed #64748b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-board-label {
+  font-size: 2rem;
+  color: #cbd5f5;
+}
+
+/* =========================================================
+   2. 상점 UI
+   ========================================================= */
+#shop-screen {
+  justify-content: center;
+  align-items: center;
+}
+
+.shop-layout {
+  width: 90%;
+  height: 90%;
+  border-radius: 24px;
+  border: 3px solid #e5e7eb;
+  background: #020617;
+  display: grid;
+  grid-template-columns: 1.8fr 1.2fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* 왼쪽: 기물 리스트 */
+.shop-list-wrap {
+  overflow-y: auto;
+  border-radius: 16px;
+  border: 2px solid #334155;
+  padding: 12px;
+}
+
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shop-card {
+  width: 100%;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.12s ease;
+}
+
+.shop-card:hover {
+  border-color: #38bdf8;
+  background: #08111f;
+  transform: translateX(3px);
+}
+
+.shop-card.selected {
+  border-color: #22c55e;
+  background: #052411;
+}
+
+.shop-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.shop-cost {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* 오른쪽: 설명 + 구매 + 보유 목록 */
+
+.shop-detail {
+  border-radius: 16px;
+  border: 2px solid #334155;
+  background: #020617;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 10px;
+}
+
+.shop-detail-header {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.shop-detail-body {
+  flex: 1;
+  border-radius: 12px;
+  border: 1px solid #1f2933;
+  padding: 8px;
+  font-size: 0.9rem;
+  color: #cbd5f5;
+  background: #020617;
+  overflow-y: auto;
+}
+
+.shop-detail-buy {
+  align-self: flex-end;
+  border-radius: 999px;
+  border: 1px solid #38bdf8;
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 6px 18px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.1s ease, transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.shop-detail-buy:hover {
+  background: #0ea5e9;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(56, 189, 248, 0.35);
+}
+
+/* 하단: 보유 기물 */
+
+.shop-owned {
+  margin-top: auto;
+  border-top: 1px solid #334155;
+  padding-top: 10px;
+}
+
+.shop-owned-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.shop-owned-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.owned-item {
+  border-radius: 8px;
+  background: #111827;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  color: #cbd5f5;
+  border: 1px solid #334155;
+}
+
+/* =========================================================
+   3. 배치 UI
+   ========================================================= */
+#placement-screen {
+  justify-content: center;
+  align-items: center;
+}
+
+.placement-layout {
+  width: 420px;
+  max-width: 95%;
+  height: 90%;
+  border-radius: 24px;
+  border: 3px solid #e5e7eb;
+  background: #020617;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 10px;
+}
+
+/* 상단: 타이머 영역 */
+
+.placement-timer {
+  border-radius: 16px;
+  border: 2px solid #334155;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.placement-timer-label {
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+.placement-timer-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #020617;
+  border: 1px solid #1f2933;
+  overflow: hidden;
+}
+
+.placement-timer-fill {
+  width: 100%; /* JS에서 퍼센트 조정 */
+  height: 100%;
+  background: repeating-linear-gradient(
+    135deg,
+    #38bdf8,
+    #38bdf8 8px,
+    #0ea5e9 8px,
+    #0ea5e9 16px
+  );
+  transition: width 0.2s linear;
+}
+
+.placement-timer-text {
+  font-size: 0.8rem;
+  color: #e5e7eb;
+}
+
+/* 중단: 배치 영역 */
+
+.placement-board {
+  flex: 1;
+  border-radius: 16px;
+  border: 2px solid #334155;
+  background: #020617;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 8px;
+}
+
+.placement-board-label {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+.placement-board-inner {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 4px;
+  /* JS에서 gridTemplateColumns/Rows 설정 예정 */
+}
+
+/* 하단: 구매한 기물 */
+
+.placement-inventory {
+  border-radius: 16px;
+  border: 2px solid #334155;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.placement-inventory-label {
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+.placement-inventory-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.piece-slot {
+  flex: 0 0 64px;
+  height: 64px;
+  border-radius: 12px;
+  border: 1px dashed #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+.piece-slot.empty {
+  opacity: 0.6;
+}
+
+/* =========================================================
+   반응형
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .shop-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .game-board {
+    width: 80%;
+    height: 80%;
+  }
+}

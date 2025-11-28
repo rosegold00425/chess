@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Emperor Variant UI Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- =========================
+         1. 게임 UI (보드 화면)
+         ========================== -->
+    <section id="game-screen" class="screen screen--active">
+      <div class="game-board-wrapper">
+        <div class="game-board">
+          <span class="game-board-label">보드</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         2. 상점 UI
+         ========================== -->
+    <section id="shop-screen" class="screen">
+      <div class="shop-layout">
+        
+        <!-- 왼쪽: 기물 리스트 (가격순) -->
+        <div class="shop-list-wrap">
+          <div class="shop-list" id="shopList">
+
+            <!-- 가격순: 저가 → 고가 (원하면 순서 조정 가능) -->
+            <button class="shop-card" data-piece="Pawn" data-cost="100">
+              <div class="shop-title">폰</div>
+              <div class="shop-cost">100</div>
+            </button>
+
+            <button class="shop-card" data-piece="Phantom" data-cost="300">
+              <div class="shop-title">팬텀</div>
+              <div class="shop-cost">300</div>
+            </button>
+
+            <button class="shop-card" data-piece="Knight" data-cost="300">
+              <div class="shop-title">나이트</div>
+              <div class="shop-cost">300</div>
+            </button>
+
+            <button class="shop-card" data-piece="Bishop" data-cost="300">
+              <div class="shop-title">비숍</div>
+              <div class="shop-cost">300</div>
+            </button>
+
+            <button class="shop-card" data-piece="Assassin" data-cost="350">
+              <div class="shop-title">어쌔신</div>
+              <div class="shop-cost">350</div>
+            </button>
+
+            <button class="shop-card" data-piece="Rook" data-cost="400">
+              <div class="shop-title">룩</div>
+              <div class="shop-cost">400</div>
+            </button>
+
+            <button class="shop-card" data-piece="Berserker" data-cost="450">
+              <div class="shop-title">버서커</div>
+              <div class="shop-cost">450</div>
+            </button>
+
+            <button class="shop-card" data-piece="Sentinel" data-cost="500">
+              <div class="shop-title">센티넬</div>
+              <div class="shop-cost">500</div>
+            </button>
+
+            <button class="shop-card" data-piece="Crusader" data-cost="600">
+              <div class="shop-title">크루세이더</div>
+              <div class="shop-cost">600</div>
+            </button>
+
+            <button class="shop-card" data-piece="Queen" data-cost="700">
+              <div class="shop-title">퀸</div>
+              <div class="shop-cost">700</div>
+            </button>
+
+            <button class="shop-card" data-piece="Emperor" data-cost="900">
+              <div class="shop-title">엠페러</div>
+              <div class="shop-cost">900</div>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- 오른쪽: 설명 + 구매 + 보유 목록 -->
+        <div class="shop-detail">
+
+          <div class="shop-detail-header">설명</div>
+          <div class="shop-detail-body" id="shopDescription">
+            기물을 선택하면 정보(행마법, 특징, 가격 등)가 이 영역에 표시됩니다.
+          </div>
+
+          <button class="shop-detail-buy" id="btnBuy">구매</button>
+
+          <div class="shop-owned">
+            <div class="shop-owned-title">보유 기물</div>
+            <div class="shop-owned-list" id="ownedList">
+              <!-- JS로 Pawn × 2 이런 식으로 채울 예정 -->
+              <!-- 예시
+              <div class="owned-item">폰 × 2</div>
+              <div class="owned-item">엠페러 × 1</div>
+              -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         3. 배치 UI
+         ========================== -->
+    <section id="placement-screen" class="screen">
+      <div class="placement-layout">
+
+        <!-- 상단: 타이머 영역 -->
+        <div class="placement-timer">
+          <div class="placement-timer-label">타이머</div>
+          <div class="placement-timer-bar">
+            <div class="placement-timer-fill" id="placementTimerBar"></div>
+          </div>
+          <div class="placement-timer-text">
+<script type="module" src="shop.js"></script>
