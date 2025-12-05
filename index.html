@@ -6,12 +6,14 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app">
+  <div class="app" id="main">
+
+    <div class="button" id="page-changer" onclick="pageChanger()">뷁</div>
 
     <!-- =========================
          1. 게임 UI (보드 화면)
          ========================== -->
-    <section id="game-screen" class="screen screen--active">
+    <section id="game-screen" class="screen">
       <div class="game-board-wrapper">
         <div class="game-board">
           <span class="game-board-label">보드</span>
@@ -22,7 +24,7 @@
     <!-- =========================
          2. 상점 UI
          ========================== -->
-    <section id="shop-screen" class="screen">
+    <section id="shop-screen" class="screen screen--active">
       <div class="shop-layout">
         
         <!-- 왼쪽: 기물 리스트 (가격순) -->
