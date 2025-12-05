@@ -13,8 +13,6 @@ function pageChanger() {
 
   const nextIndex = (activeIndex + 1) % sections.length;
 
-  sections[activeIndex].classList.remove('screen screen--active');
-  sections[activeIndex].classList.add('screen');
+  sections[activeIndex].classList.remove('screen--active');
   sections[nextIndex].classList.add('screen--active');
-  sections[nextIndex].classList.remove('screen');
 }
