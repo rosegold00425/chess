@@ -10,6 +10,42 @@
 
     <div class="button" id="page-changer" onclick="pageChanger()">뷁</div>
 
+    <section id="main-screen" class="screen screen--active">
+      <div class="home-layout">
+
+        <!-- 상단: 로그인 정보 / 플레이어 데이터 -->
+        <div class="home-top">
+          <div class="home-panel">
+            <div class="home-panel-body">
+              <div>플랫폼: <strong id="loginProvider">Guest</strong></div>
+              <div>계정: <strong id="loginId">-</strong></div>
+            </div>
+          </div>
+
+          <div class="home-panel">
+            <div class="home-panel-body home-player-grid">
+              <div>닉네임: <strong id="playerNick">젤리뽀</strong></div>
+              <div>점수: <strong id="playerScore">1200</strong></div>
+              <div>티어: <strong id="playerTier">Silver</strong></div>
+              <div>재화: <strong id="playerCurrency">2,000</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 중앙: 게임 시작 -->
+        <div class="home-center">
+          <button class="home-start" id="btnStartGame">게임 시작</button>
+        </div>
+
+        <div class="home-bottom-nav">
+          <button class="nav-btn" data-target="shop-screen">상점</button>
+          <button class="nav-btn is-active" data-target="main-screen">메인</button>
+          <button class="nav-btn" data-target="settings-screen">설정</button>
+        </div>
+
+      </div>
+    </section>
+
     <!-- =========================
          1. 게임 UI (보드 화면)
          ========================== -->
@@ -24,7 +60,7 @@
     <!-- =========================
          2. 상점 UI
          ========================== -->
-    <section id="shop-screen" class="screen screen--active">
+    <section id="shop-screen" class="screen">
       <div class="shop-layout">
         
         <div class="shop-list-wrap">

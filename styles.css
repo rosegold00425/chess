@@ -28,6 +28,7 @@ body {
 
 .screen--active {
   display: flex;
+  justify-content: center;
 }
 
 /* =========================================================
@@ -503,4 +504,105 @@ body {
   height: 40px;
   width: 40px;
   color: #000000;
+}
+
+/* 메인 페이지 */
+
+.home-layout{
+  height: calc(100vh - 72px);
+  padding: 18px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+  max-width: 900px;
+  margin: 0, auto;
+}
+
+.home-top{
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 12px;
+  justify-content: center;
+}
+
+.home-panel{
+  background: #0f172a;
+  border: 1px solid rgba(148,163,184,0.22);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.home-panel-title{
+  font-weight: 700;
+  color: #e5e7eb;
+  margin-bottom: 8px;
+}
+
+.home-panel-body{
+  color: #cbd5f5;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.home-player-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+/* 중앙 버튼 */
+.home-center{
+  display: grid;
+  place-items: center;
+}
+
+.home-start{
+  border: 1px solid rgba(34,211,238,0.9);
+  background: #0b1220;
+  color: #e5e7eb;
+  border-radius: 18px;
+  padding: 18px 44px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.home-start:hover{
+  background: rgba(34,211,238,0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(34,211,238,0.18);
+}
+
+.home-bottom-nav{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  background: rgba(2,6,23,0.92);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(148,163,184,0.22);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px 14px;
+}
+
+.home-bottom-nav .nav-btn{
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.22);
+  background: #0f172a;
+  color: #e5e7eb;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.home-bottom-nav .nav-btn .is-active{
+  border-color: rgba(34,211,238,0.9);
+  box-shadow: 0 10px 22px rgba(34,211,238,0.16);
+}
+
+/* 작은 화면 대응 */
+@media (max-width: 700px){
+  .home-top{ grid-template-columns: 1fr; }
+  .home-player-grid{ grid-template-columns: 1fr; }
 }
