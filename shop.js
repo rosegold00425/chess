@@ -91,10 +91,9 @@ class ShopUI {
         this.descriptionEl = document.getElementById("shopDescription");
         this.buyButton = document.getElementById("btnBuy");
         this.ownedListEl = document.getElementById("ownedList");
-        this.creditDisplay = document.getElementById("displayCrd");
+        this.creditsDisplay = document.getElementById("displayCrd");
         this.cards = Array.from(document.querySelectorAll(".shop-card"));
         this.credits = initialCredits;
-        this.creditsDisplay = document.getElementById("shopCredits");
         this.initCards();
         this.initBuyButton();
         this.updateCreditsUI();
@@ -128,7 +127,6 @@ class ShopUI {
                 return;
             }
             this.credits -= piece.cost;
-            this.updateCreditsUI();
             this.owned[piece.id] = (this.owned[piece.id] ?? 0) + 1;
             this.updateCreditsUI();
             this.renderOwnedList();
@@ -138,7 +136,7 @@ class ShopUI {
     }
     renderDescription(piece, costOverride) {
         const cost = costOverride ?? piece.cost;
-        this.descriptionEl.innerHTML = `\n      <div><strong>${piece.nameKo}</strong> (${piece.id})</div>\n      <div style="margin-top:4px; font-size:0.9rem; color:#cbd5f5;">\n        가격: <strong>${cost}</strong>\n      </div>\n      <div style="margin-top:8px; font-size:0.9rem;">\n        ${piece.summary}\n      </div>\n      <div style="margin-top:8px; font-size:0.85rem; color:#9ca3af; white-space:pre-line;">\n        행마법: ${piece.movement}\n      </div>\n    `;
+        this.descriptionEl.innerHTML = `\n      <div><strong>${piece.nameKo}</strong> (${piece.id})</div>\n      <div style="margin-top:4px; font-size:0.9rem; color:#cbd5f5;">\n        가격: <strong>${cost}</strong>\n      </div>\n      <div style="margin-top:8px; font-size:0.9rem;">\n        ${piece.summary}\n      </div>\n      <div class="movingDisplay" data-piece="${piece.id}"></div>`;
     }
     renderOwnedList() {
         this.ownedListEl.innerHTML = "";
