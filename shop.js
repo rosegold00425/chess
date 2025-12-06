@@ -177,24 +177,30 @@ class ShopUI {
         });
     }
 
-    renderMovementDemo(pieceId) {
+    sleep(ms) {
+        return new Promise(res => setTimeout(res, ms));
+    }
+
+    async renderMovementDemo(pieceId) {
         const host = this.descriptionEl.querySelector(".movingDisplay");
         if (!host) return;
 
-        // 이전 애니메이션 정리
-        if (this.demoAnim) this.demoAnim.cancel();
-        if (this.enemyAnim) this.enemyAnim.cancel();
-
+        // 새 데모 시작(이전 루프 중단)
         this.demoToken++;
         const token = this.demoToken;
 
         const demo = this.getDemo(pieceId);
         host.style.setProperty("--size", String(demo.size));
 
-        // grid + 말 생성
-        host.innerHTML = `<div class="mini-grid"></div><div class="demo-piece"></div>`;
+        host.innerHTML = `
+            <div class="mini-grid"></div>
+            <div class="demo-piece"></div>
+            <div class="demo-enemy"></div>
+        `;
+
         const grid = host.querySelector(".mini-grid");
         const pieceEl = host.querySelector(".demo-piece");
+        const enemyEl = host.querySelector(".demo-enemy");
 
         // 셀 생성
         for (let r = 0; r < demo.size; r++) {
@@ -210,74 +216,91 @@ class ShopUI {
         const cellAt = (p) =>
             grid.querySelector(`.cell[data-r="${p[0]}"][data-c="${p[1]}"]`);
 
-        // 타겟 강조
-        (demo.targets || []).forEach((p) => {
-            const cell = cellAt(p);
-            if (cell) cell.classList.add("target");
-        });
+        const clearCellClasses = () => {
+            grid.querySelectorAll(".cell").forEach(el => {
+                el.classList.remove("legal", "attack", "move", "capture");
+            });
+        };
 
-        // 특수: 밀침/피격 대상 표시용 점(버서커 데모 등)
-        let enemyEl = null;
-        if (demo.enemy) {
-            enemyEl = document.createElement("div");
-            enemyEl.className = "demo-enemy";
-            host.appendChild(enemyEl);
-        }
+        const rectToXY = (p) => {
+            const rect = grid.getBoundingClientRect();
+            const cellW = rect.width / demo.size;
+            const cellH = rect.height / demo.size;
+            const radius = 7; // 14px 점 기준 반지름
+            const x = p[1] * cellW + cellW / 2 - radius;
+            const y = p[0] * cellH + cellH / 2 - radius;
+            return { x, y };
+        };
 
-        // 레이아웃 끝난 뒤 픽셀 계산해서 애니메이션 시작
+        const placeMarker = (el, p) => {
+            const { x, y } = rectToXY(p);
+            // capPulse가 transform을 덮을 수 있어서 변수도 같이 저장
+            el.style.setProperty("--tx", `${x}px`);
+            el.style.setProperty("--ty", `${y}px`);
+            el.style.transform = `translate(${x}px, ${y}px)`;
+        };
+
+        const animateMarker = (el, from, to, duration = 650) => {
+            const a = rectToXY(from);
+            const b = rectToXY(to);
+
+            // capPulse가 transform을 애니메이션으로 덮지 않도록 변수 갱신
+            el.style.setProperty("--tx", `${b.x}px`);
+            el.style.setProperty("--ty", `${b.y}px`);
+
+            const anim = el.animate(
+            [
+                { transform: `translate(${a.x}px, ${a.y}px)` },
+                { transform: `translate(${b.x}px, ${b.y}px)` },
+            ],
+            { duration, easing: "ease-in-out", fill: "forwards" }
+            );
+            return anim.finished.catch(() => {});
+        };
+
+        // 초기 배치
         requestAnimationFrame(() => {
             if (token !== this.demoToken) return;
-
-            const rect = grid.getBoundingClientRect();
-            if (rect.width <= 0 || rect.height <= 0) return; // 화면이 숨김이면 0일 수 있음
-
-            // grid가 직사각형일 수도 있으니 더 작은 쪽 기준으로 셀 크기 잡기
-            const base = Math.min(rect.width, rect.height);
-            const cellSize = base / demo.size;
-            const radius = 7; // 점 크기(14px)의 반지름
-
-            const toXY = (p) => {
-            const x = p[1] * cellSize + cellSize / 2 - radius;
-            const y = p[0] * cellSize + cellSize / 2 - radius;
-            return { x, y };
-            };
-
-            // 말 이동 keyframes 생성
-            const keyframes = demo.path.map((p) => {
-            const { x, y } = toXY(p);
-            return { transform: `translate(${x}px, ${y}px)` };
-            });
-
-            // 말 애니메이션
-            if (pieceEl && pieceEl.animate) {
-            this.demoAnim = pieceEl.animate(keyframes, {
-                duration: demo.duration || 1800,
-                iterations: Infinity,
-                easing: "ease-in-out",
-            });
-            }
-
-            // 적(밀침) 애니메이션
-            if (demo.enemy && enemyEl && enemyEl.animate) {
-            const { from, to, at } = demo.enemy;
-            const a = toXY(from);
-            const b = toXY(to);
-
-            this.enemyAnim = enemyEl.animate(
-                [
-                { transform: `translate(${a.x}px, ${a.y}px)`, offset: 0 },
-                { transform: `translate(${a.x}px, ${a.y}px)`, offset: at }, // 충돌 전 대기
-                { transform: `translate(${b.x}px, ${b.y}px)`, offset: Math.min(at + 0.12, 0.98) }, // 밀침
-                { transform: `translate(${b.x}px, ${b.y}px)`, offset: 1 },
-                ],
-                {
-                duration: demo.duration || 1800,
-                iterations: Infinity,
-                easing: "ease-in-out",
-                }
-            );
-            }
+            placeMarker(pieceEl, demo.start);
+            placeMarker(enemyEl, demo.enemyAt);
         });
+
+        // 반복 루프
+        while (token === this.demoToken) {
+            clearCellClasses();
+            enemyEl.classList.remove("capturable");
+
+            // 1) 이동 가능 칸 표시(1초)
+            demo.legal.forEach(({ pos, kind }) => {
+                const cell = cellAt(pos);
+                if (!cell) return;
+                cell.classList.add("legal", kind); // legal + attack/move/capture
+            });
+            await this.sleep(demo.timing.showMoves);
+
+            if (token !== this.demoToken) break;
+
+            // 2) 이동
+            clearCellClasses();
+            await animateMarker(pieceEl, demo.start, demo.moveTo, demo.timing.move);
+
+            if (token !== this.demoToken) break;
+
+            // 3) 잡을 수 있는 말 표시(검정→빨강) + 타겟 칸 빨강 테두리
+            if (demo.captureAt) {
+            cellAt(demo.captureAt)?.classList.add("capture");
+            enemyEl.classList.add("capturable");
+            }
+            await this.sleep(demo.timing.showCapture);
+
+            if (token !== this.demoToken) break;
+
+            // 리셋(다시 시작 위치로)
+            enemyEl.classList.remove("capturable");
+            clearCellClasses();
+            await animateMarker(pieceEl, demo.moveTo, demo.start, demo.timing.reset);
+            await this.sleep(120);
+        }
     }
 
     /**
@@ -285,93 +308,211 @@ class ShopUI {
      * 좌표는 [row, col], 0~(size-1)
      */
     getDemo(pieceId) {
-        switch (pieceId) {
-            case "Pawn":
-            return {
-                size: 5,
-                path: [[3, 2], [2, 2], [3, 2], [2, 3], [3, 2]],
-                targets: [[2, 2], [2, 3]],
-            };
+        const timing = { showMoves: 1500, move: 650, showCapture: 900, reset: 350 };
 
-            case "Knight":
+        if (pieceId === "Pawn") {
             return {
-                size: 5,
-                path: [[2, 2], [0, 3], [2, 2], [1, 4], [2, 2]],
-                targets: [[0, 3], [1, 4]],
+            size: 5,
+            start: [3, 2],
+            legal: [
+                { pos: [2, 2], kind: "move" },
+                { pos: [2, 1], kind: "attack" },
+                { pos: [2, 3], kind: "attack" },
+            ],
+            moveTo: [2, 2],
+            enemyAt: [1, 1],
+            captureAt: [1, 1],
+            timing,
             };
-
-            case "Bishop":
-            return {
-                size: 5,
-                path: [[2, 2], [0, 0], [4, 4], [2, 2]],
-                targets: [[0, 0], [4, 4]],
-            };
-
-            case "Rook":
-            return {
-                size: 5,
-                path: [[2, 2], [2, 4], [4, 4], [4, 0], [2, 2]],
-                targets: [[2, 4], [4, 4]],
-            };
-
-            case "Queen":
-            return {
-                size: 5,
-                path: [[2, 2], [2, 4], [0, 2], [4, 4], [2, 2]],
-                targets: [[2, 4], [0, 2], [4, 4]],
-            };
-
-            case "Emperor":
-            return {
-                size: 5,
-                path: [[2, 2], [0, 2], [4, 2], [1, 4], [2, 2]],
-                targets: [[0, 2], [1, 4]],
-            };
-
-            case "Crusader":
-            return {
-                size: 5,
-                path: [[2, 1], [2, 4], [2, 1]],
-                targets: [[2, 4]],
-            };
-
-            case "Sentinel":
-            return {
-                size: 5,
-                path: [[2, 2], [2, 3], [3, 3], [3, 2], [3, 1], [2, 1], [1, 1], [1, 2], [1, 3], [2, 2]],
-                targets: [[2, 3], [1, 1]],
-                duration: 2200,
-            };
-
-            case "Berserker":
-            return {
-                size: 5,
-                path: [[3, 1], [1, 2], [3, 1]],
-                targets: [[1, 2]],
-                // enemy: from -> to 로 "밀림" (at은 전체 애니메이션 시간 중 몇 %에서 일어나는지)
-                enemy: { from: [1, 3], to: [1, 4], at: 0.55 },
-                duration: 2000,
-            };
-
-            case "Assassin":
-            return {
-                size: 5,
-                path: [[2, 2], [2, 3], [2, 2], [2, 2]],
-                targets: [[0, 0]],
-                duration: 1900,
-            };
-
-            case "Phantom":
-            return {
-                size: 5,
-                path: [[2, 0], [2, 3], [0, 3], [0, 1], [2, 1], [2, 0]],
-                targets: [[2, 3], [0, 3]],
-                duration: 2200,
-            };
-
-            default:
-            return { size: 5, path: [[2, 2], [2, 2]] };
         }
+
+        if (pieceId === "Phantom") {
+            return {
+            size: 5,
+            start: [2, 2],
+            legal: [
+                { pos: [2, 0], kind: "move" },
+                { pos: [2, 1], kind: "move" },
+                { pos: [2, 3], kind: "move" },
+                { pos: [2, 4], kind: "move" },
+                { pos: [0, 2], kind: "move" },
+                { pos: [1, 2], kind: "move" },
+                { pos: [3, 2], kind: "move" },
+                { pos: [4, 2], kind: "move" },
+            ],
+            moveTo: [2, 2],
+            enemyAt: [0, 0],
+            captureAt: null,
+            timing,
+            };
+        }
+
+        if (pieceId === "Knight") {
+            return {
+            size: 5,
+            start: [2, 2],
+            legal: [
+                { pos: [0, 1], kind: "attack" },
+                { pos: [0, 3], kind: "attack" },
+                { pos: [1, 0], kind: "attack" },
+                { pos: [1, 4], kind: "attack" },
+                { pos: [3, 0], kind: "attack" },
+                { pos: [3, 4], kind: "attack" },
+                { pos: [4, 1], kind: "attack" },
+                { pos: [4, 3], kind: "attack" },
+            ],
+            moveTo: [0, 3],
+            enemyAt: [1, 1],
+            captureAt: [1, 1],
+            timing,
+            };
+        }
+
+        if (pieceId === "Bishop") {
+            return {
+            size: 5,
+            start: [2, 2],
+            legal: [
+                { pos: [0, 0], kind: "attack" },
+                { pos: [1, 1], kind: "attack" },
+                { pos: [3, 3], kind: "attack" },
+                { pos: [4, 4], kind: "attack" },
+                { pos: [0, 4], kind: "attack" },
+                { pos: [1, 3], kind: "attack" },
+                { pos: [3, 1], kind: "attack" },
+                { pos: [4, 0], kind: "attack" },
+            ],
+            moveTo: [1, 1],
+            enemyAt: [0, 2],
+            captureAt: [0, 2],
+            timing,
+            };
+        }
+
+        if (pieceId === "Assassin") {
+            return {
+            size: 5,
+            start: [3, 2],
+            legal: [
+                { pos: [3, 1], kind: "move" },
+                { pos: [3, 3], kind: "move" },
+                { pos: [2, 2], kind: "move" },
+                { pos: [4, 2], kind: "move" },
+                { pos: [2, 1], kind: "catch" },
+                { pos: [1, 0], kind: "catch" },
+                { pos: [2, 3], kind: "catch" },
+                { pos: [1, 4], kind: "catch" },
+                { pos: [4, 1], kind: "catch" },
+                { pos: [4, 3], kind: "catch" },
+            ],
+            moveTo: [3, 1],
+            enemyAt: [1, 3],
+            captureAt: [1, 3],
+            timing,
+            };
+        }
+
+        if (pieceId === "Rook") {
+            return {
+            size: 5,
+            start: [2, 2],
+            legal: [
+                { pos: [2, 0], kind: "attack" },
+                { pos: [2, 1], kind: "attack" },
+                { pos: [2, 3], kind: "attack" },
+                { pos: [2, 4], kind: "attack" },
+                { pos: [0, 2], kind: "attack" },
+                { pos: [1, 2], kind: "attack" },
+                { pos: [3, 2], kind: "attack" },
+                { pos: [4, 2], kind: "attack" },
+            ],
+            moveTo: [1, 2],
+            enemyAt: [1, 3],
+            captureAt: [1, 3],
+            timing,
+            };
+        }
+
+        if (pieceId === "Emperor") {
+            return {
+            size: 5,
+            start: [2, 2],
+            legal: [
+                { pos: [2, 0], kind: "attack" },
+                { pos: [2, 1], kind: "attack" },
+                { pos: [2, 3], kind: "attack" },
+                { pos: [2, 4], kind: "attack" },
+                { pos: [0, 2], kind: "attack" },
+                { pos: [1, 2], kind: "attack" },
+                { pos: [3, 2], kind: "attack" },
+                { pos: [4, 2], kind: "attack" },
+                { pos: [0, 0], kind: "attack" },
+                { pos: [1, 1], kind: "attack" },
+                { pos: [3, 3], kind: "attack" },
+                { pos: [4, 4], kind: "attack" },
+                { pos: [0, 4], kind: "attack" },
+                { pos: [1, 3], kind: "attack" },
+                { pos: [3, 1], kind: "attack" },
+                { pos: [4, 0], kind: "attack" },
+                { pos: [0, 1], kind: "attack" },
+                { pos: [0, 3], kind: "attack" },
+                { pos: [1, 0], kind: "attack" },
+                { pos: [1, 4], kind: "attack" },
+                { pos: [3, 0], kind: "attack" },
+                { pos: [3, 4], kind: "attack" },
+                { pos: [4, 1], kind: "attack" },
+                { pos: [4, 3], kind: "attack" },
+            ],
+            moveTo: [2, 2],
+            enemyAt: [0, 3],
+            captureAt: [0, 3],
+            timing,
+            };
+        }
+
+        if (pieceId === "Queen") {
+            return {
+            size: 5,
+            start: [2, 2],
+            legal: [
+                { pos: [2, 0], kind: "attack" },
+                { pos: [2, 1], kind: "attack" },
+                { pos: [2, 3], kind: "attack" },
+                { pos: [2, 4], kind: "attack" },
+                { pos: [0, 2], kind: "attack" },
+                { pos: [1, 2], kind: "attack" },
+                { pos: [3, 2], kind: "attack" },
+                { pos: [4, 2], kind: "attack" },
+                { pos: [0, 0], kind: "attack" },
+                { pos: [1, 1], kind: "attack" },
+                { pos: [3, 3], kind: "attack" },
+                { pos: [4, 4], kind: "attack" },
+                { pos: [0, 4], kind: "attack" },
+                { pos: [1, 3], kind: "attack" },
+                { pos: [3, 1], kind: "attack" },
+                { pos: [4, 0], kind: "attack" },
+            ],
+            moveTo: [0, 2],
+            enemyAt: [0, 3],
+            captureAt: [0, 3],
+            timing,
+            };
+        }
+
+        // 기본값
+        return {
+            size: 5,
+            start: [2, 2],
+            legal: [
+            { pos: [2, 3], kind: "move" },
+            { pos: [1, 2], kind: "attack" },
+            { pos: [1, 1], kind: "catch" }
+            ],
+            moveTo: [2, 3],
+            enemyAt: [1, 1],
+            captureAt: [1, 1],
+            timing,
+        };
     }
 
     updateCreditsUI() {
