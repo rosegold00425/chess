@@ -87,11 +87,11 @@ class ShopUI {
         this.ownedListEl = null;
         this.selectedPiece = null;
         this.credits = 0;
-        this.creditsDisplay = null;
         this.owned = {};
         this.descriptionEl = document.getElementById("shopDescription");
         this.buyButton = document.getElementById("btnBuy");
         this.ownedListEl = document.getElementById("ownedList");
+        this.creditDisplay = document.getElementById("displayCrd");
         this.cards = Array.from(document.querySelectorAll(".shop-card"));
         this.credits = initialCredits;
         this.creditsDisplay = document.getElementById("shopCredits");
@@ -128,10 +128,12 @@ class ShopUI {
                 return;
             }
             this.credits -= piece.cost;
+            this.updateCreditsUI();
             this.owned[piece.id] = (this.owned[piece.id] ?? 0) + 1;
             this.updateCreditsUI();
             this.renderOwnedList();
             this.flashDescription(`${piece.nameKo}을(를) 구매했습니다.`);
+            
         });
     }
     renderDescription(piece, costOverride) {
@@ -162,9 +164,7 @@ class ShopUI {
         });
     }
     updateCreditsUI() {
-        if (this.creditsDisplay) {
-            this.creditsDisplay.textContent = String(this.credits);
-        }
+        this.creditsDisplay.textContent = String("현재 크레딧: "+this.credits);
     }
     flashDescription(msg) {
         this.descriptionEl.innerHTML = `<div style="color:#f97373;">${msg}</div>`;

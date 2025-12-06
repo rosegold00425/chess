@@ -180,8 +180,13 @@ body {
   overflow-y: auto;
 }
 
+.shop-detail-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .shop-detail-buy {
-  align-self: flex-end;
   border-radius: 999px;
   border: 1px solid #38bdf8;
   background: #0f172a;
@@ -197,6 +202,12 @@ body {
   background: #0ea5e9;
   transform: translateY(-1px);
   box-shadow: 0 8px 16px rgba(56, 189, 248, 0.35);
+}
+
+.shop-detail-credits {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
 /* 하단: 보유 기물 */
