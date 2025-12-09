@@ -506,7 +506,11 @@ body {
   color: #000000;
 }
 
-/* 메인 페이지 */
+/* 
+================================
+          메인 페이지 
+================================
+    */
 
 .home-layout{
   height: calc(100vh - 72px);
@@ -565,11 +569,47 @@ body {
   font-size: 1.1rem;
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  position: relative;
+  overflow: visible;
+  z-index: 0;
 }
 .home-start:hover{
   background: rgba(34,211,238,0.12);
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(34,211,238,0.18);
+}
+
+.home-start.searching::before,
+.home-start.searching::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+}
+
+.home-start.searching::before {
+  inset: -4px; /* 버튼보다 살짝 크게 잡아서 바깥쪽 경로로 돌게 */
+  /* 위쪽 중앙에 작은 빛나는 점 하나 */
+  background: radial-gradient(
+    circle at 50% 0%,           /* 위쪽 중앙 */
+    rgba(255,255,255,0.95) 0 3px,
+    rgba(255,255,255,0.7) 3px 6px,
+    transparent 6px
+  );
+  animation: spin-dot 1s linear infinite;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.home-start.searching::after {
+  inset: 2px;                  /* 안쪽으로 줄여서 링 두께 조절 */
+  background: #0b1220;         /* 버튼 배경색이랑 맞추기 */
+  z-index: -1;
+}
+
+@keyframes spin-dot {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .home-bottom-nav{
@@ -596,7 +636,7 @@ body {
   cursor: pointer;
 }
 
-.home-bottom-nav .nav-btn .is-active{
+.home-bottom-nav .nav-btn.is-active{
   border-color: rgba(34,211,238,0.9);
   box-shadow: 0 10px 22px rgba(34,211,238,0.16);
 }
