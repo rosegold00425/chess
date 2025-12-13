@@ -4,13 +4,70 @@
   <meta charset="UTF-8" />
   <title>Emperor Variant UI Prototype</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="loginStyle.css" />
 </head>
 <body>
   <div class="app" id="main">
 
     <div class="button" id="page-changer" onclick="pageChanger()">뷁</div>
+    <div class="button" id="user-changer" data-user="1" onclick="testUserHandler()">유저변경</div>
 
-    <section id="main-screen" class="screen screen--active">
+    <section id="login-screen" class="screen screen--active">
+      <div class="login-wrap">
+        <h1 class="login-title">Chess: Collapse</h1>
+
+        <div class="login-card">
+          <form id="login-form" class="login-form" autocomplete="on">
+            <div class="login-grid">
+              <div class="login-fields">
+                <label class="login-field">
+                  <span class="login-label">아이디</span>
+                  <input
+                    id="login-id"
+                    name="loginId"
+                    class="login-input"
+                    type="text"
+                    placeholder="아이디"
+                    required
+                  />
+                </label>
+
+                <label class="login-field">
+                  <span class="login-label">비밀번호</span>
+                  <input
+                    id="login-pw"
+                    name="loginPw"
+                    class="login-input"
+                    type="password"
+                    placeholder="비밀번호"
+                    required
+                  />
+                </label>
+              </div>
+
+              <button type="submit" class="login-submit" id="btnLogin">
+                로그인
+              </button>
+            </div>
+
+            <label class="login-remember">
+              <input type="checkbox" id="remember-id" />
+              <span>아이디 기억하기</span>
+            </label>
+
+            <nav class="login-links" aria-label="로그인 도움 링크">
+              <a href="#" class="login-link">아이디 찾기</a>
+              <span class="login-sep">|</span>
+              <a href="#" class="login-link">비밀번호 찾기</a>
+              <span class="login-sep">|</span>
+              <a href="#" class="login-link">회원가입</a>
+            </nav>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="main-screen" class="screen">
       <div class="home-layout">
 
         <!-- 상단: 로그인 정보 / 플레이어 데이터 -->
@@ -165,6 +222,6 @@
   <script type="module" src="data.js"></script>
   <script type="module" src="shop.js"></script>
   <script type="module" src="main.js"></script>
-  <script src="debug.js"></script>
+  <script type="module" src="debug.js"></script>
 </body>
   

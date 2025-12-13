@@ -1,7 +1,9 @@
-class MainUI{
+export default class MainUI{
     constructor(){
         this.startBtn = document.getElementById('btnStartGame');
+        this.user = null;
         this.initStartBtn();
+        this.updateUserData();
     }
 
     initStartBtn(){
@@ -31,6 +33,22 @@ class MainUI{
     searchPlayer(){
         
     }
+
+    updateUserData(){
+        if(this.user == null) return;
+
+        const nameDisplay = document.getElementById('playerNick');
+        const scoreDisplay = document.getElementById('playerScore');
+        const tierDisplay = document.getElementById('playerTier');
+        const currencyDisplay = document.getElementById('playerCurrency');
+
+        nameDisplay.textContent = this.user.getName();
+        scoreDisplay.textContent = this.user.getScore();
+        tierDisplay.textContent = this.user.getTier();
+        currencyDisplay.textContent = this.user.getCash();
+    }
+
+    setUser(user){ this.user = user; }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
