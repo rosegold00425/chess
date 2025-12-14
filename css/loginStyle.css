@@ -1,0 +1,170 @@
+/* ===== Login Screen (scoped) ===== */
+#login-screen {
+  --card-bg: rgba(255, 255, 255, 0.06);
+  --card-border: rgba(255, 255, 255, 0.14);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+  --dim: rgba(255, 255, 255, 0.45);
+  --accent: #7c5cff;
+
+  padding: 28px 18px;
+}
+
+#login-screen .login-wrap {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+#login-screen .login-title {
+  margin: 0 0 16px;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+#login-screen .login-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+#login-screen .login-form {
+  display: grid;
+  gap: 12px;
+}
+
+/* 스케치 핵심: 좌측 2줄 + 우측 세로 버튼 */
+#login-screen .login-grid {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: 14px;
+  align-items: stretch;
+}
+
+#login-screen .login-fields {
+  display: grid;
+  gap: 10px;
+}
+
+#login-screen .login-field {
+  display: grid;
+  gap: 6px;
+}
+
+#login-screen .login-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+#login-screen .login-input {
+  height: 44px;
+  width: 100%;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+  outline: none;
+  transition: box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+#login-screen .login-input::placeholder {
+  color: var(--dim);
+}
+
+#login-screen .login-input:focus {
+  border-color: color-mix(in oklab, var(--accent) 65%, white 0%);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent 78%);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+#login-screen .login-submit {
+  border: 1px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: white;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--accent) 92%, white 0%),
+    color-mix(in oklab, var(--accent) 62%, black 18%)
+  );
+  box-shadow: 0 10px 18px rgba(124, 92, 255, 0.22);
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+#login-screen .login-submit:hover {
+  filter: brightness(1.06);
+}
+
+#login-screen .login-submit:active {
+  transform: translateY(1px);
+}
+
+#login-screen .login-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  user-select: none;
+  padding-left: 2px;
+}
+
+#login-screen .login-remember input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+#login-screen .login-links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 2px;
+  font-size: 13px;
+}
+
+#login-screen .login-link {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 4px;
+  border-radius: 10px;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+#login-screen .login-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+#login-screen .login-sep {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+#gleLogin {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  height: 30px;
+}
+
+/* 모바일에서 버튼이 아래로 내려가게 */
+@media (max-width: 420px) {
+  #login-screen .login-title {
+    font-size: 32px;
+  }
+  #login-screen .login-grid {
+    grid-template-columns: 1fr;
+  }
+  #login-screen .login-submit {
+    height: 46px;
+  }
+}

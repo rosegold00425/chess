@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>Emperor Variant UI Prototype</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="loginStyle.css" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="./css/loginStyle.css" />
+  <link rel="stylesheet" href="./css/mainStyle.css" />
 </head>
 <body>
   <div class="app" id="main">
@@ -23,7 +24,7 @@
                 <label class="login-field">
                   <span class="login-label">아이디</span>
                   <input
-                    id="login-id"
+                    id="login-email"
                     name="loginId"
                     class="login-input"
                     type="text"
@@ -50,17 +51,23 @@
               </button>
             </div>
 
+            <p class="login-error" id="login-error" aria-live="polite" style="display: none"></p>
+
+            <button type="button" id="gleLogin">구글 로그인</button>
+
             <label class="login-remember">
               <input type="checkbox" id="remember-id" />
               <span>아이디 기억하기</span>
+              <input type="checkbox" id="remember-login" />
+              <span>자동 로그인</span>
             </label>
 
             <nav class="login-links" aria-label="로그인 도움 링크">
               <a href="#" class="login-link">아이디 찾기</a>
               <span class="login-sep">|</span>
-              <a href="#" class="login-link">비밀번호 찾기</a>
+              <a href="#" class="login-link" id="link-reset">비밀번호 찾기</a>
               <span class="login-sep">|</span>
-              <a href="#" class="login-link">회원가입</a>
+              <a href="#" class="login-link" id="link-signup">회원가입</a>
             </nav>
           </form>
         </div>
@@ -68,39 +75,53 @@
     </section>
 
     <section id="main-screen" class="screen">
-      <div class="home-layout">
+      <header class="topbar">
+        <div class="currency" aria-label="재화 표시">
+          <div class="currency__pill" role="group" aria-label="재화">
+            <span class="coin" aria-hidden="true"></span>
+            <span class="currency__amount">0</span>
+          </div>
+          <div class="currency__hint">재화</div>
+        </div>
 
-        <!-- 상단: 로그인 정보 / 플레이어 데이터 -->
-        <div class="home-top">
-          <div class="home-panel">
-            <div class="home-panel-body">
-              <div>플랫폼: <strong id="loginProvider">Guest</strong></div>
-              <div>계정: <strong id="loginId">-</strong></div>
+        <div class="top-actions">
+          <button class="btn" type="button">상점</button>
+          <button class="btn" type="button">설정</button>
+        </div>
+      </header>
+
+      <!-- 중앙: 프로필 패널 + 게임 시작 -->
+      <main class="content">
+        <section class="stack" aria-label="메인 메뉴">
+          <div class="profile-card" aria-label="프로필 패널">
+            <div class="profile-card__avatar" aria-hidden="true"></div>
+
+            <div class="nickname">
+              <div class="nickname__line">
+                <span class="nickname__label">닉네임</span>
+                <span class="nickname__value">임시 닉네임</span>
+              </div>
             </div>
           </div>
 
-          <div class="home-panel">
-            <div class="home-panel-body home-player-grid">
-              <div>닉네임: <strong id="playerNick">젤리뽀</strong></div>
-              <div>점수: <strong id="playerScore">1200</strong></div>
-              <div>티어: <strong id="playerTier">Silver</strong></div>
-              <div>재화: <strong id="playerCurrency">2,000</strong></div>
-            </div>
-          </div>
-        </div>
+          <button class="primary" type="button">게임 시작</button>
+        </section>
+      </main>
 
-        <!-- 중앙: 게임 시작 -->
-        <div class="home-center">
-          <button class="home-start" id="btnStartGame">게임 시작</button>
+      <!-- 하단: 랭킹 / 일반 / 연습 -->
+      <nav class="bottom-nav" aria-label="모드 선택">
+        <div class="nav-item">
+          <button class="nav-btn" type="button">랭킹</button>
         </div>
-
-        <div class="home-bottom-nav">
-          <button class="nav-btn" data-target="shop-screen">상점</button>
-          <button class="nav-btn is-active" data-target="main-screen">메인</button>
-          <button class="nav-btn" data-target="settings-screen">설정</button>
+        <div class="diamond" aria-hidden="true"></div>
+        <div class="nav-item">
+          <button class="nav-btn is-active" type="button">일반</button>
         </div>
-
-      </div>
+        <div class="diamond" aria-hidden="true"></div>
+        <div class="nav-item">
+          <button class="nav-btn" type="button">연습</button>
+        </div>
+      </nav>
     </section>
 
     <!-- =========================
@@ -219,9 +240,10 @@
   </div>
 </section>
   </div>
-  <script type="module" src="data.js"></script>
-  <script type="module" src="shop.js"></script>
-  <script type="module" src="main.js"></script>
-  <script type="module" src="debug.js"></script>
+  <script type="module" src="./js/data.js"></script>
+  <script type="module" src="./js/shop.js"></script>
+  <script type="module" src="./js/main.js"></script>
+  <script type="module" src="./js/debug.js"></script>
+  <script type="module" src="./js/login.js"></script>
 </body>
   
